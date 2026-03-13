@@ -1,49 +1,27 @@
-import { type BaseErrorOptions, BaseError } from '@/error/base.error.js';
-
-import { AuthErrorCode } from './auth.constant.js';
+import { BaseError } from '@/common/common.error.js';
 
 export abstract class AuthError extends BaseError {}
 
 export class AuthenticationError extends AuthError {
-  constructor(message?: string, options?: BaseErrorOptions) {
-    super(
-      AuthenticationError.name,
-      AuthErrorCode.UNAUTHENTICATED,
-      message || 'Authentication error',
-      { httpStatus: 401, ...options }, // Unauthorized
-    );
-  }
+  static readonly CODE = 'UNAUTHENTICATED';
+  static readonly MESSAGE = 'Authentication error';
+  static readonly HTTP_STATUS = 401; // Unauthorized
 }
 
 export class UnauthorizedError extends AuthError {
-  constructor(message?: string, options?: BaseErrorOptions) {
-    super(
-      UnauthorizedError.name,
-      AuthErrorCode.UNAUTHORIZED,
-      message || 'Unauthorized error',
-      { httpStatus: 403, ...options }, // Forbidden
-    );
-  }
+  static readonly CODE = 'UNAUTHORIZED';
+  static readonly MESSAGE = 'Unauthorized error';
+  static readonly HTTP_STATUS = 403; // Forbidden
 }
 
 export class ExpiredCredentialError extends AuthError {
-  constructor(message?: string, options?: BaseErrorOptions) {
-    super(
-      ExpiredCredentialError.name,
-      AuthErrorCode.EXPIRED_CREDENTIAL,
-      message || 'Expired credential',
-      { httpStatus: 401, ...options }, // Unauthorized
-    );
-  }
+  static readonly CODE = 'INVALID_CREDENTIAL';
+  static readonly MESSAGE = 'Expired credential';
+  static readonly HTTP_STATUS = 401; // Unauthorized
 }
 
 export class InvalidCredentialError extends AuthError {
-  constructor(message?: string, options?: BaseErrorOptions) {
-    super(
-      InvalidCredentialError.name,
-      AuthErrorCode.INVALID_CREDENTIAL,
-      message || 'Invalid credential',
-      { httpStatus: 401, ...options }, // Unauthorized
-    );
-  }
+  static readonly CODE = 'UNAUTHORIZED';
+  static readonly MESSAGE = 'Invalid credential';
+  static readonly HTTP_STATUS = 401; // Unauthorized
 }

@@ -1,8 +1,3 @@
-/** Audit error codes (13xxxx) */
-export namespace AuditErrorCode {
-  export const NOT_FOUND = 130000;
-}
-
 export namespace AuditConstant {
   export const SERVICE_MIN_LENGTH = 1;
   export const SERVICE_MAX_LENGTH = 36;

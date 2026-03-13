@@ -1,16 +1,9 @@
-import { type BaseErrorOptions, BaseError } from '@/error/base.error.js';
-
-import { AuditErrorCode } from './audit.constant.js';
+import { BaseError } from '@/common/common.error.js';
 
 export abstract class AuditError extends BaseError {}
 
 export class NotFoundAuditError extends AuditError {
-  constructor(message?: string, options?: BaseErrorOptions) {
-    super(
-      AuditError.name,
-      AuditErrorCode.NOT_FOUND,
-      message || 'Not found audit',
-      { httpStatus: 404, ...options }, // Not Found
-    );
-  }
+  static readonly CODE = 'NOT_FOUND_AUDIT';
+  static readonly MESSAGE = 'Not found audit';
+  static readonly HTTP_STATUS = 404; // Not Found
 }

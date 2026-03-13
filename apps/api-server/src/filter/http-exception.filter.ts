@@ -5,7 +5,6 @@ import {
   Catch,
   ForbiddenException,
   HttpException,
-  HttpStatus,
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -14,7 +13,6 @@ import {
   type ErrorResponse,
   AuthenticationError,
   BaseError,
-  CommonErrorCode,
   HttpUtil,
   InvalidArgumentsError,
   UnauthorizedError,
@@ -85,30 +83,31 @@ export class HttpExceptionFilter implements ExceptionFilter, OnModuleInit {
 
     // Build error response
     let httpStatus: number;
-    let error: number;
+    let errorCode: string;
     let message: string;
 
+    // TODO: Catch exceptions & export logic to method
     if (exception instanceof UnknownError) {
-      httpStatus = exception.options?.httpStatus || HttpStatus.INTERNAL_SERVER_ERROR;
-      error = exception.code;
-      message = 'Unknown error';
+      httpStatus = exception.options.httpStatus ?? UnknownError.HTTP_STATUS;
+      errorCode = exception.code;
+      message = UnknownError.MESSAGE; // hide unknown error message
     } else if (exception instanceof BaseError) {
-      httpStatus = exception.options?.httpStatus || HttpStatus.INTERNAL_SERVER_ERROR;
-      error = exception.code;
+      httpStatus = exception.options.httpStatus ?? UnknownError.HTTP_STATUS;
+      errorCode = exception.code;
       message = exception.message;
     } else if (exception instanceof HttpException) {
       httpStatus = exception.getStatus();
-      error = CommonErrorCode.UNKNOWN;
+      errorCode = UnknownError.CODE;
       message = exception.message;
     } else {
-      httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-      error = CommonErrorCode.UNKNOWN;
-      message = 'Unknown error';
+      httpStatus = UnknownError.HTTP_STATUS;
+      errorCode = UnknownError.CODE;
+      message = UnknownError.MESSAGE; // hide unchecked error message
     }
 
     const response = context.getResponse<FastifyReply>();
     const body: ErrorResponse = {
-      error,
+      error: errorCode,
       message,
     };
 

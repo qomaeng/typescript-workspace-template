@@ -1,38 +1,42 @@
-import { type BaseErrorOptions, BaseError } from '@/error/base.error.js';
+export interface BaseErrorOptions {
+  httpStatus?: number;
+}
 
-import { CommonErrorCode } from './common.constant.js';
+export abstract class BaseError extends Error {
+  readonly code: string;
+  readonly options: BaseErrorOptions;
+
+  constructor(message?: string, options?: BaseErrorOptions) {
+    const ctor = new.target as typeof BaseError & {
+      CODE: string;
+      MESSAGE: string;
+      HTTP_STATUS: number;
+    };
+
+    super(message ?? ctor.MESSAGE);
+
+    this.name = ctor.name;
+    this.code = ctor.CODE;
+    this.options = { httpStatus: ctor.HTTP_STATUS, ...options };
+  }
+}
 
 export abstract class CommonError extends BaseError {}
 
 export class UnknownError extends CommonError {
-  constructor(message?: string, options?: BaseErrorOptions) {
-    super(
-      UnknownError.name,
-      CommonErrorCode.UNKNOWN,
-      message || 'Unknown error',
-      { httpStatus: 500, ...options }, // Internal Server Error
-    );
-  }
+  static readonly CODE = 'UNKNOWN_ERROR';
+  static readonly MESSAGE = 'Unknown error';
+  static readonly HTTP_STATUS = 500; // Internal Server Error
 }
 
 export class UnsupportedError extends CommonError {
-  constructor(message?: string, options?: BaseErrorOptions) {
-    super(
-      UnsupportedError.name,
-      CommonErrorCode.UNSUPPORTED,
-      message || 'Unsupported error',
-      { httpStatus: 501, ...options }, // Not Implemented
-    );
-  }
+  static readonly CODE = 'UNSUPPORTED_ERROR';
+  static readonly MESSAGE = 'Unsupported error';
+  static readonly HTTP_STATUS = 501; // Not Implemented
 }
 
 export class InvalidArgumentsError extends CommonError {
-  constructor(message?: string, options?: BaseErrorOptions) {
-    super(
-      InvalidArgumentsError.name,
-      CommonErrorCode.INVALID_ARGUMENTS,
-      message || 'Invalid arguments error',
-      { httpStatus: 400, ...options }, // Bad Request
-    );
-  }
+  static readonly CODE = 'INVALID_ARGS';
+  static readonly MESSAGE = 'Invalid arguments error';
+  static readonly HTTP_STATUS = 400; // Bad Request
 }

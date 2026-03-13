@@ -1,10 +1,3 @@
-/** User error codes (11xxxx) */
-export namespace UserErrorCode {
-  export const NOT_FOUND = 110000;
-  export const DUPLICATED = 110001;
-  export const DELETED = 110002;
-}
-
 export namespace UserConstant {
   export const USERNAME_MIN_LENGTH = 2;
   export const USERNAME_MAX_LENGTH = 50;

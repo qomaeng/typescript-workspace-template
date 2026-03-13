@@ -17,8 +17,8 @@ import { AuthV1Controller } from './controller/v1/auth-v1.controller';
 import { MetricV1Controller } from './controller/v1/metric-v1.controller';
 import { UserV1Controller } from './controller/v1/user-v1.controller';
 import { HttpExceptionFilter } from './filter/http-exception.filter';
-import { HttpRequestInterceptor } from './interceptor/http-request.interceptor';
 import { AuthMiddleware } from './middleware/auth.middleware';
+import { LoggingMiddleware } from './middleware/logging-middleware';
 
 @Module({
   imports: [
@@ -74,7 +74,6 @@ import { AuthMiddleware } from './middleware/auth.middleware';
   controllers: [MetricV1Controller, UserV1Controller, AuthV1Controller],
   providers: [
     // NestJS Components
-    { provide: APP_INTERCEPTOR, useClass: HttpRequestInterceptor },
     // { provide: APP_INTERCEPTOR, useClass: AuditInterceptor },
     { provide: APP_FILTER, useClass: HttpExceptionFilter },
 
@@ -90,7 +89,7 @@ import { AuthMiddleware } from './middleware/auth.middleware';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {
     consumer
-      .apply(AuthMiddleware)
+      .apply(LoggingMiddleware, AuthMiddleware)
       .exclude(
         { path: '*path', method: RequestMethod.OPTIONS },
         { path: '/docs', method: RequestMethod.GET },

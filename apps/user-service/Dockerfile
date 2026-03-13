@@ -1,7 +1,7 @@
 ###################
 #       Deps
 ###################
-FROM node:22-alpine AS deps
+FROM node:24-alpine AS deps
 
 WORKDIR /usr/src/workspace
 
@@ -13,7 +13,7 @@ COPY pnpm-lock.yaml pnpm-workspace.yaml package.json .npmrc ./
 COPY packages/core/package.json packages/core/
 COPY apps/user-service/package.json apps/user-service/
 
-RUN --mount=type=cache,id=pnpm-store-node22,target=/pnpm/store,sharing=locked \
+RUN --mount=type=cache,id=pnpm-store-node24,target=/pnpm/store,sharing=locked \
     pnpm fetch
 
 ###################
@@ -25,7 +25,7 @@ WORKDIR /usr/src/workspace
 
 COPY . .
 
-RUN --mount=type=cache,id=pnpm-store-node22,target=/pnpm/store,sharing=locked \
+RUN --mount=type=cache,id=pnpm-store-node24,target=/pnpm/store,sharing=locked \
     pnpm install --offline --frozen-lockfile
 
 RUN pnpm --filter '{packages/core}' \
@@ -37,7 +37,7 @@ RUN pnpm deploy --filter '{apps/user-service}' --prod /app
 ###################
 #   Application
 ###################
-FROM node:22-alpine
+FROM node:24-alpine
 
 USER 1000:1000
 
